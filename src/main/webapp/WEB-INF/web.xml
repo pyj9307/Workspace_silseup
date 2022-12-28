@@ -9,8 +9,13 @@
 		<web-resource-collection>
 			<web-resource-name>WebMarket</web-resource-name>
 			<description></description>
+			<!-- <url-pattern>/*</url-pattern> -->
+			<!-- <url-pattern>/board/*</url-pattern>
+			<url-pattern>/member/*</url-pattern> -->
 			<url-pattern>/addProduct.jsp</url-pattern>
+			<!-- 이거 걸면 그 사이트에 로그인을 해야지만 접속이 가능 -->
 			<url-pattern>/editProduct.jsp</url-pattern>
+			<!-- <url-pattern>/products.jsp</url-pattern> -->
 		</web-resource-collection>
 		<auth-constraint>
 			<description>권한 관리자명</description>

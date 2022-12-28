@@ -32,7 +32,7 @@
 		<div class="row">
 			<div class="col-md-5">
 			<!-- 상세페이지 부분에 사진 출력은 나중에 과제로 제시 예정. 검사 안함. -->
-				<%-- <img src="./resources/images/<%=product.getFilename()%>" style="width: 100%" /> --%>
+				<%-- <img src="c:/upload/<%=product.getFilename()%>" style="width: 100%" /> --%>
 				<img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/images/<%=product.getFilename()%>" style="width: 100%" />
 			</div>
 			<div class="col-md-6">

@@ -25,8 +25,9 @@
 				while (rs.next()) {
 			%>
 			<div class="col-md-4">
-				<%-- <img src="./resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%"> --%>
-				<img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%">
+				<img src="./resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%">
+				<%-- <img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%"> --%>
+				<!-- 이 절대경로는 크롬 웹 브리우저에서는 c드라이브 경로에 대한 권한이 없어서 사진이 안 뜰 수 있음 -->
 				<h3><%=rs.getString("p_name")%></h3>
 				<p><%=rs.getString("p_description")%>
 				<p><%=rs.getString("p_UnitPrice")%>원

@@ -30,36 +30,36 @@ public class BoardController extends HttpServlet {
 		response.setContentType("text/html; charset=utf-8");
 		request.setCharacterEncoding("utf-8");
 	
-		if (command.equals("/BoardListAction.do")) {//µî·ÏµÈ ±Û ¸ñ·Ï ÆäÀÌÁö Ãâ·ÂÇÏ±â
+		if (command.equals("/BoardListAction.do")) {//ë“±ë¡ëœ ê¸€ ëª©ë¡ í˜ì´ì§€ ì¶œë ¥í•˜ê¸°
 			requestBoardList(request);
 			RequestDispatcher rd = request.getRequestDispatcher("./board/list.jsp");
 			rd.forward(request, response);
-		} else if (command.equals("/BoardWriteForm.do")) { // ±Û µî·Ï ÆäÀÌÁö Ãâ·ÂÇÏ±â
+		} else if (command.equals("/BoardWriteForm.do")) { // ê¸€ ë“±ë¡ í˜ì´ì§€ ì¶œë ¥í•˜ê¸°
 				requestLoginName(request);
 				RequestDispatcher rd = request.getRequestDispatcher("./board/writeForm.jsp");
 				rd.forward(request, response);				
-		} else if (command.equals("/BoardWriteAction.do")) {// »õ·Î¿î ±Û µî·ÏÇÏ±â
+		} else if (command.equals("/BoardWriteAction.do")) {// ìƒˆë¡œìš´ ê¸€ ë“±ë¡í•˜ê¸°
 				requestBoardWrite(request);
 				RequestDispatcher rd = request.getRequestDispatcher("/BoardListAction.do");
 				rd.forward(request, response);						
-		} else if (command.equals("/BoardViewAction.do")) {//¼±ÅÃµÈ ±Û »ó¼¼ ÆäÀÌÁö °¡Á®¿À±â
+		} else if (command.equals("/BoardViewAction.do")) {//ì„ íƒëœ ê¸€ ìƒì„¸ í˜ì´ì§€ ê°€ì ¸ì˜¤ê¸°
 				requestBoardView(request);
 				RequestDispatcher rd = request.getRequestDispatcher("/BoardView.do");
 				rd.forward(request, response);						
-		} else if (command.equals("/BoardView.do")) { //±Û »ó¼¼ ÆäÀÌÁö Ãâ·ÂÇÏ±â
+		} else if (command.equals("/BoardView.do")) { //ê¸€ ìƒì„¸ í˜ì´ì§€ ì¶œë ¥í•˜ê¸°
 				RequestDispatcher rd = request.getRequestDispatcher("./board/view.jsp");
 				rd.forward(request, response);	
-		} else if (command.equals("/BoardUpdateAction.do")) { //¼±ÅÃµÈ ±ÛÀÇ Á¶È¸¼ö Áõ°¡ÇÏ±â
+		} else if (command.equals("/BoardUpdateAction.do")) { //ì„ íƒëœ ê¸€ì˜ ì¡°íšŒìˆ˜ ì¦ê°€í•˜ê¸°
 				requestBoardUpdate(request);
 				RequestDispatcher rd = request.getRequestDispatcher("/BoardListAction.do");
 				rd.forward(request, response);
-		}else if (command.equals("/BoardDeleteAction.do")) { //¼±ÅÃµÈ ±Û »èÁ¦ÇÏ±â
+		}else if (command.equals("/BoardDeleteAction.do")) { //ì„ íƒëœ ê¸€ ì‚­ì œí•˜ê¸°
 				requestBoardDelete(request);
 				RequestDispatcher rd = request.getRequestDispatcher("/BoardListAction.do");
 				rd.forward(request, response);				
 		} 
 	}
-	//µî·ÏµÈ ±Û ¸ñ·Ï °¡Á®¿À±â	
+	//ë“±ë¡ëœ ê¸€ ëª©ë¡ ê°€ì ¸ì˜¤ê¸°	
 	public void requestBoardList(HttpServletRequest request){
 			
 		BoardDAO dao = BoardDAO.getInstance();
@@ -94,7 +94,7 @@ public class BoardController extends HttpServlet {
 		request.setAttribute("total_record",total_record); 
 		request.setAttribute("boardlist", boardlist);								
 	}
-	//ÀÎÁõµÈ »ç¿ëÀÚ¸í °¡Á®¿À±â
+	//ì¸ì¦ëœ ì‚¬ìš©ìëª… ê°€ì ¸ì˜¤ê¸°
 	public void requestLoginName(HttpServletRequest request){
 					
 		String id = request.getParameter("id");
@@ -105,7 +105,7 @@ public class BoardController extends HttpServlet {
 		
 		request.setAttribute("name", name);									
 	}
-	// »õ·Î¿î ±Û µî·ÏÇÏ±â
+	// ìƒˆë¡œìš´ ê¸€ ë“±ë¡í•˜ê¸°
 	public void requestBoardWrite(HttpServletRequest request){
 					
 		BoardDAO dao = BoardDAO.getInstance();		
@@ -128,7 +128,7 @@ public class BoardController extends HttpServlet {
 		
 		dao.insertBoard(board);								
 	}
-	//¼±ÅÃµÈ ±Û »ó¼¼ ÆäÀÌÁö °¡Á®¿À±â
+	//ì„ íƒëœ ê¸€ ìƒì„¸ í˜ì´ì§€ ê°€ì ¸ì˜¤ê¸°
 	public void requestBoardView(HttpServletRequest request){
 					
 		BoardDAO dao = BoardDAO.getInstance();
@@ -142,7 +142,7 @@ public class BoardController extends HttpServlet {
    		request.setAttribute("page", pageNum); 
    		request.setAttribute("board", board);   									
 	}
-	//¼±ÅÃµÈ ±Û ³»¿ë ¼öÁ¤ÇÏ±â
+	//ì„ íƒëœ ê¸€ ë‚´ìš© ìˆ˜ì •í•˜ê¸°
 	public void requestBoardUpdate(HttpServletRequest request){
 					
 		int num = Integer.parseInt(request.getParameter("num"));
@@ -165,7 +165,7 @@ public class BoardController extends HttpServlet {
 		
 		 dao.updateBoard(board);								
 	}
-	//¼±ÅÃµÈ ±Û »èÁ¦ÇÏ±â
+	//ì„ íƒëœ ê¸€ ì‚­ì œí•˜ê¸°
 	public void requestBoardDelete(HttpServletRequest request){
 					
 		int num = Integer.parseInt(request.getParameter("num"));
