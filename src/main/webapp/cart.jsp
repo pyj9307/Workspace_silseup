@@ -6,6 +6,7 @@
 <head>
 <link rel="stylesheet" href="./resources/css/bootstrap.min.css" />
 <%
+// session.getId()
 	String cartId = session.getId();
 %>
 <title>장바구니</title>
