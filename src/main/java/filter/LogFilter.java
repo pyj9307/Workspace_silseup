@@ -6,29 +6,31 @@ import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+// 콘솔 상에 기록하는 필터
 public class LogFilter implements Filter  {
 	
 	public void  init(FilterConfig config) throws ServletException{
-		System.out.println("WebMarket �ʱ�ȭ...."); 
+		System.out.println("WebMarket 초기화(지만 init 메서드 호출되는 부분을 확인하는 것)...."); 
 	}
 	
 	public void  doFilter(ServletRequest request,ServletResponse response,FilterChain chain) throws java.io.IOException, ServletException {
-		System.out.println(" ������ Ŭ���̾�Ʈ IP : " + request.getRemoteAddr());
+		System.out.println(" 접속한 클라이언트 IP : " + request.getRemoteAddr());
 		long start = System.currentTimeMillis();
-        System.out.println(" ������ URL ��� : " + getURLPath(request));
-		System.out.println(" ��û ó�� ���� �ð� : " + getCurrentTime());
+        System.out.println(" 접근한 URL 경로 : " + getURLPath(request));
+		System.out.println(" 요청 처리 시작 시각 : " + getCurrentTime());
 		chain.doFilter(request,response);		
 		
 		long end = System.currentTimeMillis();		
-		System.out.println(" ��û ó�� ���� �ð� : " + getCurrentTime());
-		System.out.println(" ��û ó�� �ҿ� �ð� : " + (end-start)+ "ms ");
+		System.out.println(" 요청 처리 종료 시각 : " + getCurrentTime());
+		System.out.println(" 요청 처리 소요 시간 : " + (end-start)+ "ms ");
 		System.out.println("=======================================================");
 	}
 
 	public void destroy( ){
       
 	}
-
+	// ServletRequest request : 부모
+	// HttpServletRequest req : 하위
 	private String getURLPath(ServletRequest request) {
 		HttpServletRequest req;
 		String currentPath="";
@@ -37,6 +39,7 @@ public class LogFilter implements Filter  {
 			req = (HttpServletRequest)request;
 			currentPath = req.getRequestURI();
 			queryString = req.getQueryString();
+			// 삼항 다항식으로 표시(조건문 if를)
 			queryString = queryString == null ? "" : "?" + queryString;
 		}
 		return currentPath+queryString;
