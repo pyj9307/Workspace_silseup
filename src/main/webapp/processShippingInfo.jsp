@@ -3,7 +3,7 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 
-// 해당 배송정보들의 값
+	//해당 배송정보들의 값을 받아와서 쿠키로 생성하는 로직. 
 	Cookie cartId = new Cookie("Shipping_cartId", URLEncoder.encode(request.getParameter("cartId"), "utf-8"));
 	Cookie name = new Cookie("Shipping_name", URLEncoder.encode(request.getParameter("name"), "utf-8"));
 	Cookie shippingDate = new Cookie("Shipping_shippingDate", URLEncoder.encode(request.getParameter("shippingDate"), "utf-8"));

@@ -49,7 +49,7 @@ public class ProductRepository {
 		tablet.setCondition("Old");
 		tablet.setFilename("P1236.png");
 		
-		// 상품등록 부분 연습히가. 이미지 파일 위치는 c:/upload
+		// 상품등록 부분 연습하기. 이미지 파일 위치는 c:/upload
 		// 상품의 예는 디비에 있는 내용을 기반으로 등록함.
 		// P123456/ test/ 1000원/ test : 설명/ test : 카테고리
 		// 수량 : 11 / 상품상태 : new / 이미지파일이름 : 라바1.jpg
@@ -61,10 +61,19 @@ public class ProductRepository {
 		testlarva.setCondition("New");
 		testlarva.setFilename("라바1.jpg");
 
+		Product testlarva2 = new Product("P123123", "test2", 900000);
+		testlarva2.setDescription("test");
+		testlarva2.setCategory("test");
+		testlarva2.setManufacturer("test");
+		testlarva2.setUnitsInStock(11);
+		testlarva2.setCondition("New");
+		testlarva2.setFilename("라바1.jpg");
+		
 		listOfProducts.add(phone);
 		listOfProducts.add(notebook);
 		listOfProducts.add(tablet);
 		listOfProducts.add(testlarva);
+		listOfProducts.add(testlarva2);
 	}
 
 	public ArrayList<Product> getAllProducts() {

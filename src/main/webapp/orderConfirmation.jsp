@@ -17,6 +17,7 @@
 	String shipping_addressName = "";
 	
 	// 쿠키에 등록된 데이터를 복수개 가져와서, 쿠키 타입으로 배열 형식으로 받습니다.
+	// 저장된 쿠키의 정보를 서버가 이용하기 위해서는 클라이언트 측에서 보낼 때 사용하는 request라는 객체에 담긴 쿠키의 정보를 가져와서 사용함.
 	Cookie[] cookies = request.getCookies();
 
 	// 널 체크, 널이 아니면 작업함.
