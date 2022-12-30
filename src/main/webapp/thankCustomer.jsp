@@ -44,8 +44,10 @@
 </body>
 </html>
 <%
+// 세션을 완전히 클리어 하는 부분
 	session.invalidate();
 
+// 쿠키의 유효시간을 0으로 성정해서, 쿠키 종료하는 부분.(processShippingInfo 참고.)
 	for (int i = 0; i < cookies.length; i++) {
 		Cookie thisCookie = cookies[i];
 		String n = thisCookie.getName();

@@ -6,6 +6,7 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 
+	// 해당 웹브라우저마다 하나의 세션의 고유 아이디 정보를, 장바구니 아이디로 재사용 중.
 	String cartId = session.getId();
 
 	String shipping_cartId = "";
@@ -15,13 +16,20 @@
 	String shipping_zipCode = "";
 	String shipping_addressName = "";
 	
+	// 쿠키에 등록된 데이터를 복수개 가져와서, 쿠키 타입으로 배열 형식으로 받습니다.
 	Cookie[] cookies = request.getCookies();
 
+	// 널 체크, 널이 아니면 작업함.
 	if (cookies != null) {
 		for (int i = 0; i < cookies.length; i++) {
+			// 배열에서 각 인덱스 번호 차례로 불러오기.
 			Cookie thisCookie = cookies[i];
+			
+			// 쿠키라는 저장소에서 해당 키의 이름을 가져옴
 			String n = thisCookie.getName();
+			// 가져온 이름의 값이 조건문에 해당하면, 내보낼 때 전달하기 편하게 하기 위해 URLEncoder로 한부분을 역으로 URLDecoder 작업을 한다.
 			if (n.equals("Shipping_cartId"))
+				// thisCookie.getValue() 해당 쿠키라는 객체의 값을 가져와서, utf-8 형식으로 담아두게 됨.
 				shipping_cartId = URLDecoder.decode((thisCookie.getValue()), "utf-8");
 			if (n.equals("Shipping_name"))
 				shipping_name = URLDecoder.decode((thisCookie.getValue()), "utf-8");
