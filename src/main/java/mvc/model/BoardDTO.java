@@ -1,6 +1,9 @@
 package mvc.model;
 
+import java.util.ArrayList;
+
 public class BoardDTO {
+	// num ~ ip 까지는 일반글에 관련된 정보
 	private int num;
 	private String id;
 	private String name;
@@ -9,6 +12,17 @@ public class BoardDTO {
 	private String regist_day;
 	private int hit;
 	private String ip;
+	// 이미지 파일들의 목록
+	// FileImageDTO 형은 하나의 파일 이미지 형을 말한다.
+	private ArrayList<FileImageDTO> fileList;
+
+	public ArrayList<FileImageDTO> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(ArrayList<FileImageDTO> fileList) {
+		this.fileList = fileList;
+	}
 
 	public BoardDTO() {
 		super();		

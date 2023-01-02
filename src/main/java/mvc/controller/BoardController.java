@@ -15,6 +15,7 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import mvc.model.BoardDAO;
 import mvc.model.BoardDTO;
+import mvc.model.FileImageDTO;
 
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -172,11 +173,11 @@ public class BoardController extends HttpServlet {
 					
 		// dao 게시판에 관련된 crud 메서드들이 있다.
 		// 싱글톤 패턴.
-		BoardDAO dao = BoardDAO.getInstance();		
+		// BoardDAO dao = BoardDAO.getInstance();		
 		
 		// 사용자가 작성한 글의 내용을 담을 임시 객체.
 		// 임시 객체는 해당 DB에 전달할 형식(DTO)
-		BoardDTO board = new BoardDTO();
+		// BoardDTO board = new BoardDTO();
 		
 		String filename = "";
 		// String realFolder = "C:/upload"; //웹 어플리케이션상의 절대 경로
@@ -199,6 +200,7 @@ public class BoardController extends HttpServlet {
 			// 사용자가 작성한 글의 내용을 담을 임시 객체.
 			// 임시 객체는 해당 DB에 전달할 형식(DTO)
 			BoardDTO board = new BoardDTO();
+			FileImageDTO fileDTO = new FileImageDTO();
 		
 		// 사용자로부터 입력받은 내용을 임시 객체에 담아두는 작업.
 		board.setId(multi.getParameter("id"));
@@ -226,8 +228,14 @@ public class BoardController extends HttpServlet {
 		dao.insertBoard(board);	
 		// 해당 이미지를 저장하는 메서드를 만들기.
 		// 매개변수에는 해당 게시글의 번호를 넣을 예정.
-		dao.insertImage(num)
-	
+		// 하나의 게시글에 첨부된 이미지들의 목록도 있음.
+		
+		// board에서 이미지를 넣는 경우.
+		// 1) 한개, 2) 두개 이상이 들어갈수도 있음
+		// 3) 파일이미지가 없는 경우
+		if(board.getFileList() != null) {
+		dao.insertImage(board,fileDTO);
+		}
 		
 	} catch (IOException e) {
 		// TODO Auto-generated catch block

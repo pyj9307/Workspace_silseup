@@ -214,6 +214,56 @@ public class BoardDAO {
 			}		
 		}		
 	} 
+	
+	// 이미지를 등록하는 메서드
+public void insertImage(BoardDTO board, FileImageDTO fileDTO)  {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DBConnection.getConnection();		
+			ArrayList<FileImageDTO> fileList = new ArrayList<FileImageDTO>();
+			fileList = board.getFileList();
+			for(int i=0; i<fileList.size(); i++) {
+			String sql = "insert into board_images values(?, ?, ?, ?)";
+			
+			// 동적 쿼리에 쿼리 담기.
+			pstmt = conn.prepareStatement(sql);
+			
+			// 동적 쿼리 객체를 이용해서, 해당 DB에 각 항목의 값을 넣는 과정.
+			// Fnum, fileName, regist_day, num
+			// 해당 멀티 이미지를 반복문으로 여러개를 입력하는 로직 필요.
+			
+			// .getFnum() 자동으로 숫자 증가.
+			pstmt.setInt(1, fileDTO.getFnum());
+			// 반복문으로 해당 목록에 들어가 있는 파일이름을 하나씩 가져올 계획.
+			pstmt.setString(2, fileList.get(i).getFileName());
+			// 등록하는 날짜 형식은 시스템 날짜 및 시간을 시용할 예정.
+			pstmt.setString(3, fileDTO.getRegist_day());
+			// 부모 게시글을 입력할 예정.
+			pstmt.setInt(4, board.getNum());
+
+			// 해당 담은 동적 쿼리 객체를 실행하는 메서드.
+			// executeUpdate() 호출해서 DB에 저장.
+			pstmt.executeUpdate();
+			}
+			
+		} catch (Exception ex) {
+			System.out.println("insertBoard() 에러 : " + ex);
+		} finally {
+			try {		
+				// 역순으로 DB에 연결할 때 사용했던 객체를 반납함.
+				if (pstmt != null) 
+					pstmt.close();				
+				if (conn != null) 
+					conn.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
+		}		
+	} 
+	
+	
 	// 선택된 글의 조회수 증가하기
 	// 해당 게시글을 조회했을 경우, 조회수를 증가하는 메서드.
 	public void updateHit(int num) {
