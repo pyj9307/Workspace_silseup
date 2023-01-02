@@ -13,6 +13,7 @@
 	int total_record = ((Integer) request.getAttribute("total_record")).intValue();
 	int pageNum = ((Integer) request.getAttribute("pageNum")).intValue();
 	int total_page = ((Integer) request.getAttribute("total_page")).intValue();
+	int listCount = ((Integer) request.getAttribute("listCount")).intValue();
 %>
 <html>
 <head>
@@ -35,8 +36,9 @@
 		<div class="container">
 			<h1 class="display-3">게시판</h1>
 			<h3>requestURI의 값 :<%=requestURI%> </h3>
-			<h3>contextPath의 값 :<%=contextPath%> </h3>
+			<h3>contextPath의 값 :<%=contextPath%> </h3>			
 			<h3>command의 값 :<%=command%> </h3>
+			<h3>listCount의 값 :<%=listCount%> </h3>			
 			<h3>total_record의 값 :<%=total_record%> </h3>
 			<h3>pageNum의 값 :<%=pageNum%> </h3>
 			<h3>total_page의 값 :<%=total_page%> </h3>

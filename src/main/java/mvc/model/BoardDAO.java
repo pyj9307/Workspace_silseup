@@ -21,18 +21,28 @@ public class BoardDAO {
 		return instance;
 	}	
 	//board 테이블의 레코드 개수
+	// board 게시판의 총 게시물의 갯수를 가져오기.
+	// 매개변수로 items : 검색조건, text : 검색어
 	public int getListCount(String items, String text) {
+		// DB에 접근하기 위한 기본 객체들
+		// 동적 퀴리 담을 객체 PreparedStatement
+		// 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
+		// 기본값
 		int x = 0;
 
+		// 기본 sql 문장 표현하기 위한 변수
 		String sql;
 		
+		// 해당 검색 조건이 없다면.
 		if (items == null && text == null)
+			// count(*) sql에서 해당 행의 갯수를 세어줄 때 사용.
 			sql = "select  count(*) from board";
 		else
+			// where 조건절에서 items 가 해당 조건. like 속성을 통해서 해당 검색어를 DB에서 검색함.
 			sql = "SELECT   count(*) FROM board where " + items + " like '%" + text + "%'";
 		
 		try {
@@ -60,13 +70,18 @@ public class BoardDAO {
 		return x;
 	}
 	//board 테이블의 레코드 가져오기
+	//board 실제적으로 해당 페이지에 크기를 5개씩 불러오는 페이징 처리 실제로직.
+	// page : 현재 페이지, limit : 초기에 설정한 현재 페이지에 불러올 갯수 : 5개
 	public ArrayList<BoardDTO> getBoardList(int page, int limit, String items, String text) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
-		int total_record = getListCount(items, text );
+		// DB에서 불러온 게시글 총 갯수 = 예) 11개
+		int total_record = getListCount(items, text);
+		// start = (1-1) * 5 = 0
 		int start = (page - 1) * limit;
+		// index = 1
 		int index = start + 1;
 
 		String sql;
@@ -76,6 +91,7 @@ public class BoardDAO {
 		else
 			sql = "SELECT  * FROM board where " + items + " like '%" + text + "%' ORDER BY num DESC ";
 
+		// DB에서 불러올 내용을 담을 임시 컬렉션 객체.
 		ArrayList<BoardDTO> list = new ArrayList<BoardDTO>();
 
 		try {
