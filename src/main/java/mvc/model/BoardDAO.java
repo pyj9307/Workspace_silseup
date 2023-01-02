@@ -134,6 +134,7 @@ public class BoardDAO {
 		return null;
 	}
 	//member 테이블에서 인증된 id의 사용자명 가져오기
+	//member 테이블에서 조회한 아이디가 있는지 확인
 	public String getLoginNameById(String id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -169,7 +170,9 @@ public class BoardDAO {
 		return null;
 	}
 
-	//board 테이블에 새로운 글 삽입히가
+	// board 테이블에 새로운 글 삽입하기
+	// board 글쓰기 작업. board 사용자로부터 입력받은 게시글 내용
+	// DB서버에 데이터를 전달하는 과정
 	public void insertBoard(BoardDTO board)  {
 
 		
@@ -181,7 +184,10 @@ public class BoardDAO {
 
 			String sql = "insert into board values(?, ?, ?, ?, ?, ?, ?, ?)";
 		
+			// 동적 쿼리에 쿼리 담기.
 			pstmt = conn.prepareStatement(sql);
+			
+			// 동적 쿼리 객체를 이용해서, 해당 DB에 각 항목의 값을 넣는 과정.
 			pstmt.setInt(1, board.getNum());
 			pstmt.setString(2, board.getId());
 			pstmt.setString(3, board.getName());
@@ -191,11 +197,14 @@ public class BoardDAO {
 			pstmt.setInt(7, board.getHit());
 			pstmt.setString(8, board.getIp());
 
+			// 해당 담은 동적 쿼리 객체를 실행하는 메서드.
+			// executeUpdate() 호출해서 DB에 저장.
 			pstmt.executeUpdate();
 		} catch (Exception ex) {
 			System.out.println("insertBoard() 에러 : " + ex);
 		} finally {
-			try {									
+			try {		
+				// 역순으로 DB에 연결할 때 사용했던 객체를 반납함.
 				if (pstmt != null) 
 					pstmt.close();				
 				if (conn != null) 
@@ -205,7 +214,8 @@ public class BoardDAO {
 			}		
 		}		
 	} 
-	//선택된 글의 조회수 증가하기
+	// 선택된 글의 조회수 증가하기
+	// 해당 게시글을 조회했을 경우, 조회수를 증가하는 메서드.
 	public void updateHit(int num) {
 
 		Connection conn = null;
@@ -215,16 +225,19 @@ public class BoardDAO {
 		try {
 			conn = DBConnection.getConnection();
 
+			// 해당 게시글의 번호에 해당하는 히트(조회수) 조회.
 			String sql = "select hit from board where num = ? ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
+			// 기본값
 			int hit = 0;
 
+			// 해당 결과값(DB에서 불러온 값)에서 해당 히트의 값을 불러와서 + 1 증가.
 			if (rs.next())
 				hit = rs.getInt("hit") + 1;
 		
-
+			// 조회된 조회수 숫자에 1카운트한 값을 다시 디비에 업데이트 수정하는 작업. 
 			sql = "update board set hit=? where num=?";
 			pstmt = conn.prepareStatement(sql);		
 			pstmt.setInt(1, hit);
@@ -233,7 +246,7 @@ public class BoardDAO {
 		} catch (Exception ex) {
 			System.out.println("updateHit() 에러 : " + ex);
 		} finally {
-			try {
+			try { // DB연결에 사용했던 자원 반납. 역순.
 				if (rs != null) 
 					rs.close();							
 				if (pstmt != null) 
@@ -246,19 +259,29 @@ public class BoardDAO {
 		}
 	}
 	//선택된 글 상세 내용 가져오기
+	// 글 목록에서, 해당 게시글 하나 클릭 시 상세 글보기.
+	// 해당 게시글 번호로 해당 글 하나를 가져오는 메서드
 	public BoardDTO getBoardByNum(int num, int page) {
+		
+		// DB연결을 위한 세트
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		
+		// 임시로 게시글을 담을 객체. 게시글 번호로 인한 하나의 게시글을 담을 임시 객체.
 		BoardDTO board = null;
 
+		// 해당 게시글 클릭시, 조회수 증가하는 메서드
 		updateHit(num);
+		// 해당 게시글 번호로 다시 DB에서 조회하는 작업.
 		String sql = "select * from board where num = ? ";
 
 		try {
 			conn = DBConnection.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, num);
+			
+			// 선택된 게시글 번호로 조회된 게시글 하나를 가져와서 임시 객체에 역으로 담는 작업.
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
@@ -290,7 +313,8 @@ public class BoardDAO {
 		}
 		return null;
 	}
-	//선택된 글 내용 수정하기
+	// 선택된 글 내용 수정하기
+	// 게시글을 수정하는 작업.
 	public void updateBoard(BoardDTO board) {
 
 		Connection conn = null;
@@ -302,6 +326,7 @@ public class BoardDAO {
 			conn = DBConnection.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			
+			// 업데이트 수정 시 자동 커밋을 false
 			conn.setAutoCommit(false);
 
 			pstmt.setString(1, board.getName());
@@ -309,8 +334,11 @@ public class BoardDAO {
 			pstmt.setString(3, board.getContent());
 			pstmt.setInt(4, board.getNum());
 
+			// 변경 내용을 DB에 저장을 하는 메소드
 			pstmt.executeUpdate();			
+			// 그 후에 저장하는 작업.
 			conn.commit();
+			// 트랜젝션. all or nothing, 스프링에 가면 트랜젝션 부분을 설정을 통해서 따로 보게 됨.
 
 		} catch (Exception ex) {
 			System.out.println("updateBoard() 에러 : " + ex);
@@ -325,7 +353,8 @@ public class BoardDAO {
 			}		
 		}
 	} 
-	//선택된 글 삭제하기
+	// 선택된 글 삭제하기
+	// 게시글 삭제하는 방법. 해당 게시글 번호로 삭제.
 	public void deleteBoard(int num) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;		

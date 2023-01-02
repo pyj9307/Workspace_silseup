@@ -36,7 +36,9 @@
 	<div class="container">
 
 		<form name="newWrite" action="./BoardWriteAction.do"
-			class="form-horizontal" method="post" onsubmit="return checkForm()">
+			class="form-horizontal" method="post" onsubmit="return checkForm()"
+			enctype="multipart/form-data">
+			<!-- 아이디는 기본적으로 입력을 해야되기 때문에 가져와서 hidden으로 숨김처리함 -->
 			<input name="id" type="hidden" class="form-control"
 				value="${sessionId}">
 			<div class="form-group row">
@@ -61,6 +63,11 @@
 						placeholder="content"></textarea>
 				</div>
 			</div>
+			
+			<!-- // 각각 하나씩 파일을 등록할 수 있는 기능 -->
+			파일1 : <input type="file" name="upload1" />
+			파일2 : <input type="file" name="upload2" />
+			
 			<div class="form-group row">
 				<div class="col-sm-offset-2 col-sm-10 ">
 				 <input type="submit" class="btn btn-primary " value="등록 ">				

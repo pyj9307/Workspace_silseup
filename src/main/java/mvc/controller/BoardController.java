@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+
 import mvc.model.BoardDAO;
 import mvc.model.BoardDTO;
 
@@ -48,11 +51,13 @@ public class BoardController extends HttpServlet {
 			
 			RequestDispatcher rd = request.getRequestDispatcher("./board/list.jsp");
 			rd.forward(request, response);
-		} else if (command.equals("/BoardWriteForm.do")) { // 글 등록 페이지 출력하기
+		} else if (command.equals("/BoardWriteForm.do")) { // 글 등록 페이지 출력하기, 글쓰기 폼
 				requestLoginName(request);
 				RequestDispatcher rd = request.getRequestDispatcher("./board/writeForm.jsp");
 				rd.forward(request, response);				
-		} else if (command.equals("/BoardWriteAction.do")) {// 새로운 글 등록하기
+		} else if (command.equals("/BoardWriteAction.do")) {// 새로운 글 등록하기, 글쓰기 폼에서 입력 후 처리하는 로직
+			// 여기서 글쓰기 작성 시 필요한 로직
+			// 여기안에 이미지를 등록하는 메서드를 추가할 예정
 				requestBoardWrite(request);
 				RequestDispatcher rd = request.getRequestDispatcher("/BoardListAction.do");
 				rd.forward(request, response);						
@@ -147,18 +152,22 @@ public class BoardController extends HttpServlet {
 		request.setAttribute("boardlist", boardlist);								
 	}
 	//인증된 사용자명 가져오기
+	//해당 로그인 아이디로 
 	public void requestLoginName(HttpServletRequest request){
-					
+				
 		String id = request.getParameter("id");
 		
 		BoardDAO  dao = BoardDAO.getInstance();
 		
-		String name = dao.getLoginNameById(id);		
+		// 로그인한는 아이디가 DB에 있는지 검사하는 메서드.
+		String name = dao.getLoginNameById(id);	
 		
+		// 해당 아이디가 있다면 request진행
 		request.setAttribute("name", name);									
 	}
 	// 새로운 글 등록하기
 	// 게시판 글쓰기 로직.
+	// 추가로 이미지를 등록하는 메서드를 따로 분리해서 작업 후, 여기안에 해당 메서드를 호출 할 계획
 	public void requestBoardWrite(HttpServletRequest request){
 					
 		// dao 게시판에 관련된 crud 메서드들이 있다.
@@ -169,18 +178,40 @@ public class BoardController extends HttpServlet {
 		// 임시 객체는 해당 DB에 전달할 형식(DTO)
 		BoardDTO board = new BoardDTO();
 		
+		String filename = "";
+		// String realFolder = "C:/upload"; //웹 어플리케이션상의 절대 경로
+		// 해당 프로젝트의 특정 폴더의 위치를 정대경로로 알려줘서 상품 등록시 이미지의 저장경로.
+		String realFolder = "C:\\JSP_Workspace1\\ch18_WebMarket_2\\src\\main\\webapp\\resources\\board_images";
+		String encType = "utf-8"; //인코딩 타입
+		int maxSize = 10 * 1024 * 1024; //최대 업로드될 파일의 크기10Mb
+		
+		MultipartRequest multi;
+		
+		try {
+			multi = new MultipartRequest(request, realFolder, maxSize, encType, new DefaultFileRenamePolicy());
+			//multi 관련 객체 샘플로 사용하기위해서 가지고 옴. 
+			//String productId = multi.getParameter("productId");		
+			
+			// dao 게시판에 관련된 crud 메서드들이 있다.
+			// 싱글톤 패턴.
+			BoardDAO dao = BoardDAO.getInstance();		
+			
+			// 사용자가 작성한 글의 내용을 담을 임시 객체.
+			// 임시 객체는 해당 DB에 전달할 형식(DTO)
+			BoardDTO board = new BoardDTO();
+		
 		// 사용자로부터 입력받은 내용을 임시 객체에 담아두는 작업.
-		board.setId(request.getParameter("id"));
-		board.setName(request.getParameter("name"));
-		board.setSubject(request.getParameter("subject"));
-		board.setContent(request.getParameter("content"));	
+		board.setId(multi.getParameter("id"));
+		board.setName(multi.getParameter("name"));
+		board.setSubject(multi.getParameter("subject"));
+		board.setContent(multi.getParameter("content"));	
 		
 		// 콘솔 상에 출력하기(해당 값을 잘 받아 오고 있는지 여부를 확인하는 용도.)
-		System.out.println(request.getParameter("name"));
-		System.out.println(request.getParameter("subject"));
-		System.out.println(request.getParameter("content"));
+		System.out.println(multi.getParameter("name"));
+		System.out.println(multi.getParameter("subject"));
+		System.out.println(multi.getParameter("content"));
 		//게시글의 등록 날짜 형식부분.
-		java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy/MM/dd(HH:mm:ss)");
+		java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy/MM/dd");
 		String regist_day = formatter.format(new java.util.Date()); 
 		
 		// 해당 게시글의 조회수 설정 0
@@ -190,39 +221,65 @@ public class BoardController extends HttpServlet {
 		// 등록 아이피 설정
 		board.setIp(request.getRemoteAddr());			
 		
-		dao.insertBoard(board);								
+		// 임시 객체 board(DTO) 사용자가 글쓰기 시 입력한 정보와 보이지 않는 정보를 같이 전달함.
+		// 글만 작성.
+		dao.insertBoard(board);	
+		// 해당 이미지를 저장하는 메서드를 만들기.
+		// 매개변수에는 해당 게시글의 번호를 넣을 예정.
+		dao.insertImage(num)
+	
+		
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	}
 	//선택된 글 상세 페이지 가져오기
+	// 해당 게시글의 상세 글 보기
 	public void requestBoardView(HttpServletRequest request){
 					
+		// dao DB연결을 위한 객체 및 다수의 DB 연결 메소드.
 		BoardDAO dao = BoardDAO.getInstance();
+		// num : 해당 게시글의 글번호
 		int num = Integer.parseInt(request.getParameter("num"));
+		// pageNum : 페이징 처리에서 해당 페이지 번호.
 		int pageNum = Integer.parseInt(request.getParameter("pageNum"));	
 		
+		// 임시로 해당 게시글을 담은 객체(DTO)
 		BoardDTO board = new BoardDTO();
+		// dao에서 해당 글번호의 내용을 가져오는 메서드getBoardByNum(num, pageNum).
+		// 이 메서드 안에 조회수를 중가하는 메서드가 포함되어 있다.
 		board = dao.getBoardByNum(num, pageNum);		
 		
+		// 내장 객체에 선택된 하나의 게시글의 번호인 num
+		// board : 하나의 선택된 게시글의 객체.
 		request.setAttribute("num", num);		 
    		request.setAttribute("page", pageNum); 
    		request.setAttribute("board", board);   									
 	}
-	//선택된 글 내용 수정하기
+	// 선택된 글 내용 수정하기
+	// 게시판 수정하기
 	public void requestBoardUpdate(HttpServletRequest request){
 					
+		// 문자열 형식의 게시글 번호를 int 형으로 변환하는 작업. parse
 		int num = Integer.parseInt(request.getParameter("num"));
 		int pageNum = Integer.parseInt(request.getParameter("pageNum"));	
 		
 		BoardDAO dao = BoardDAO.getInstance();		
 		
-		BoardDTO board = new BoardDTO();		
+		// 임시로 해당 게시글을 담은 객체(DTO)
+		BoardDTO board = new BoardDTO();	
+		
 		board.setNum(num);
 		board.setName(request.getParameter("name"));
 		board.setSubject(request.getParameter("subject"));
 		board.setContent(request.getParameter("content"));		
 		
+		// 날짜 형식 지정하는 포맷을 잘 정리.
 		 java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy/MM/dd(HH:mm:ss)");
 		 String regist_day = formatter.format(new java.util.Date()); 
 		 
+		 // 게시글을 수정시 조회수를 0으로 초기화함.
 		 board.setHit(0);
 		 board.setRegist_day(regist_day);
 		 board.setIp(request.getRemoteAddr());			
@@ -230,6 +287,9 @@ public class BoardController extends HttpServlet {
 		 dao.updateBoard(board);								
 	}
 	//선택된 글 삭제하기
+	// 삭제, 삭제를 생각했던, DB에서 트리거 작업으로
+	// 삭제된 회원, 게시들 등 지운 내용을 새로운 테이블레 옮기는 작업도 가능.
+	// 이부분은 DB 상에서 처리도 가능하고, 해당 서비스에도 따로 기능을 만듷어서 구현 가능.
 	public void requestBoardDelete(HttpServletRequest request){
 					
 		int num = Integer.parseInt(request.getParameter("num"));
