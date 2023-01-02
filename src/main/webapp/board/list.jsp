@@ -3,6 +3,11 @@
 <%@ page import="java.util.*"%>
 <%@ page import="mvc.model.BoardDTO"%>
 <%
+
+	String requestURI =(String)request.getAttribute("RequestURI");
+	String contextPath =(String)request.getAttribute("contextPath");
+	String command =(String)request.getAttribute("command");
+
 	String sessionId = (String) session.getAttribute("sessionId");
 	List boardList = (List) request.getAttribute("boardlist");
 	int total_record = ((Integer) request.getAttribute("total_record")).intValue();
@@ -29,6 +34,12 @@
 	<div class="jumbotron">
 		<div class="container">
 			<h1 class="display-3">게시판</h1>
+			<h3>requestURI의 값 :<%=requestURI%> </h3>
+			<h3>contextPath의 값 :<%=contextPath%> </h3>
+			<h3>command의 값 :<%=command%> </h3>
+			<h3>total_record의 값 :<%=total_record%> </h3>
+			<h3>pageNum의 값 :<%=pageNum%> </h3>
+			<h3>total_page의 값 :<%=total_page%> </h3>
 		</div>
 	</div>
 	<div class="container">

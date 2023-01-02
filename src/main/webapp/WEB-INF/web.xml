@@ -74,6 +74,7 @@
 	<servlet-mapping>
 		<servlet-name>BoardController</servlet-name>
 		<!-- <url-pattern>/*</url-pattern> -->
+		<!-- 웹 프로젝트 root 디렉토리 하위 전체에 적용하겠다는 뜻 -->
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
 </web-app>
